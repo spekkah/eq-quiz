@@ -1,0 +1,21 @@
+:root {
+    --color-bg: hsl(0 0 10);
+    --color-fg: hsl(0 0 90);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    overscroll-behavior: none;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #000;
+    color: var(--color-fg);
+}
