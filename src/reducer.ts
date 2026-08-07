@@ -1,4 +1,4 @@
-import { DEFAULT_USER_FREQ } from "./utils/constants";
+import { DEFAULT_USER_FREQ } from "@/utils/constants";
 
 interface AppState {
   phase: "init" | "quiz" | "result";
