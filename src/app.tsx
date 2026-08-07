@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { appReducer, initialAppState } from "@/reducer";
-import { FREQ_MAX, FREQ_MIN, RESULT_TIMEOUT } from "@/utils/constants";
-import { linearToLog } from "@/utils/math";
+import { EQ_NOVICE_FREQS, RESULT_TIMEOUT } from "@/utils/constants";
 import { db } from "@/lib/db";
 import { EqualizerEffect } from "@/lib/audio/effects/equalizer";
 import { StartView } from "@/views/start-view";
@@ -10,8 +9,6 @@ import { ResultView } from "@/views/result-view";
 import { AudioLoader } from "@/lib/audio/audio-loader";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
 import { useAudioContext } from "@/context/audio-context";
-
-const NOVICE_FREQS = [50, 100, 250, 500, 1000, 2500, 5000, 10000];
 
 const createEqualizerEffect = (ctx: AudioContext): EqualizerEffect => {
   return new EqualizerEffect(ctx);
@@ -43,8 +40,8 @@ export const App = () => {
       setAudioBuffers(currentBuffers);
     }
 
-    const freqIdx = Math.floor(Math.random() * NOVICE_FREQS.length);
-    const frequency = NOVICE_FREQS[freqIdx];
+    const freqIdx = Math.floor(Math.random() * EQ_NOVICE_FREQS.length);
+    const frequency = EQ_NOVICE_FREQS[freqIdx];
 
     audioPlayer.configureEffect({ frequency });
 
@@ -54,14 +51,9 @@ export const App = () => {
     dispatch({ type: "START_ROUND", targetFreq: frequency });
   }, [audioBuffers, audioCtx, audioPlayer]);
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = (freq: number) => {
     audioPlayer.stop();
-
-    const userFreqLinear = formData.get("userFreq");
-    if (!userFreqLinear) throw new Error("Error getting user frequency value");
-
-    const userFreqLog = linearToLog(Number(userFreqLinear), FREQ_MIN, FREQ_MAX);
-    dispatch({ type: "SUBMIT", userFreq: Math.round(userFreqLog) });
+    dispatch({ type: "SUBMIT", userFreq: freq });
   };
 
   useEffect(() => {
@@ -76,15 +68,18 @@ export const App = () => {
     };
   }, [phase, handleStartRound]);
 
-  if (phase === "init") return <StartView onStart={handleStartRound} />;
-
-  if (phase === "quiz")
-    return (
-      <QuizView onEqToggle={audioPlayer.toggleEffect} onSubmit={handleSubmit} />
-    );
-
-  if (phase === "result" && targetFreq !== null)
-    return <ResultView targetFreq={targetFreq} userFreq={userFreq} />;
-
-  return null;
+  return (
+    <div className="app">
+      {phase === "init" && <StartView onStart={handleStartRound} />}
+      {phase === "quiz" && (
+        <QuizView
+          onEqToggle={audioPlayer.toggleEffect}
+          onSubmit={handleSubmit}
+        />
+      )}
+      {phase === "result" && targetFreq !== null && (
+        <ResultView targetFreq={targetFreq} userFreq={userFreq} />
+      )}
+    </div>
+  );
 };

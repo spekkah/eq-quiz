@@ -6,9 +6,13 @@ export const FREQ_MIN = 20;
 export const FREQ_MAX = 20000;
 /** EQ boost/cut in Decibels (dB) */
 export const EQ_GAIN = 12;
-export const EQ_Q = 0.5;
+export const EQ_Q = 1;
+
+export const EQ_NOVICE_FREQS = [
+  31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
+];
 
 /** Initial user frequency guess in Hz */
 export const DEFAULT_USER_FREQ = 1000;
 /** Duration to display the result screen in milliseconds */
-export const RESULT_TIMEOUT = 3000;
+export const RESULT_TIMEOUT = 2000;

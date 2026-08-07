@@ -31,7 +31,7 @@ export const StartView = (props: StartViewProps) => {
         (file): Omit<AudioFile, "id"> => ({ name: file.name, blob: file }),
       );
       await db.audioFiles.bulkAdd(newStems);
-    } catch (e) {
+    } catch {
       setUploadError("Failed to upload stems");
     } finally {
       e.target.value = "";
@@ -41,17 +41,21 @@ export const StartView = (props: StartViewProps) => {
   const handleStemRemove = async (id: number) => {
     try {
       await db.audioFiles.delete(id);
-    } catch (e) {
+    } catch {
       alert("Failed to remove stem");
     }
   };
 
   return (
-    <div>
-      <button onClick={onStart} disabled={!canStartRound}>
+    <div className="start-view">
+      <button
+        className="start-round-btn"
+        onClick={onStart}
+        disabled={!canStartRound}
+      >
         Start Round
       </button>
-      <div>
+      <div className="stems-container">
         <div>
           <input
             type="file"

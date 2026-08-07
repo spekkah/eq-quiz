@@ -8,14 +8,15 @@ interface StemListProps {
 export const StemList = (props: StemListProps) => {
   const { stems, onRemove } = props;
 
-  if (stems.length < 1) return <div>Add at least one stem</div>;
+  if (stems.length < 1)
+    return <div style={{ textAlign: "center" }}>Add at least one stem</div>;
 
   return (
-    <ul>
+    <ul className="stem-list">
       {stems.map((stem) => (
-        <li key={stem.id}>
-          <button onClick={() => onRemove(stem.id)}>X</button>
+        <li className="stem-item" key={stem.id}>
           <span>{stem.name}</span>
+          <button onClick={() => onRemove(stem.id)}>X</button>
         </li>
       ))}
     </ul>
