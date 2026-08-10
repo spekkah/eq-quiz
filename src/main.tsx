@@ -1,15 +1,20 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "@/index.css";
-import { App } from "@/app";
-import { AudioContextCtx } from "@/context/audio-context";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 
-const audioCtx = new AudioContext();
+import { App } from '@/app'
+import { AudioContextCtx } from '@/context/audio-context'
 
-createRoot(document.getElementById("root")!).render(
+import '@/index.css'
+
+const rootEl = document.getElementById('root')
+if (rootEl === null) throw new Error("Can't mount the app")
+
+const audioCtx = new AudioContext()
+
+createRoot(rootEl).render(
   <StrictMode>
     <AudioContextCtx.Provider value={audioCtx}>
       <App />
     </AudioContextCtx.Provider>
   </StrictMode>,
-);
+)

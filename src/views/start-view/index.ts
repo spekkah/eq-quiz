@@ -1,1 +1,1 @@
-export { StartView } from "./start-view";
+export { StartView } from './start-view'

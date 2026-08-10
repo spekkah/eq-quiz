@@ -1,21 +1,22 @@
-import Dexie, { type EntityTable } from "dexie";
-import { DB_NAME } from "@/utils/constants";
+import Dexie, { type EntityTable } from 'dexie'
+
+import { DB_NAME } from '@/utils/constants'
 
 export interface AudioFile {
-  id: number;
-  name: string;
-  blob: Blob;
+  id: number
+  name: string
+  blob: Blob
 }
 
 export class AudioQuizDB extends Dexie {
-  audioFiles!: EntityTable<AudioFile, "id">;
+  audioFiles!: EntityTable<AudioFile, 'id'>
 
   constructor() {
-    super(DB_NAME);
+    super(DB_NAME)
     this.version(1).stores({
-      audioFiles: "++id, name",
-    });
+      audioFiles: '++id, name',
+    })
   }
 }
 
-export const db = new AudioQuizDB();
+export const db = new AudioQuizDB()

@@ -1,26 +1,27 @@
-import { type ChangeEvent } from "react";
-import { EQ_NOVICE_FREQS } from "@/utils/constants";
+import { type ChangeEvent } from 'react'
+
+import { ISO_FREQS_FULL_OCT } from '@/utils/constants'
 
 interface QuizViewProps {
-  onEqToggle: (isEnabled: boolean) => void;
-  onSubmit: (freq: number) => void;
+  onEqToggle: (isEnabled: boolean) => void
+  onSubmit: (freq: number) => void
 }
 
 export const QuizView = (props: QuizViewProps) => {
-  const { onEqToggle, onSubmit } = props;
+  const { onEqToggle, onSubmit } = props
 
   const handleEqToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    onEqToggle(e.target.checked);
-  };
+    onEqToggle(e.target.checked)
+  }
 
   return (
-    <div className="quiz-view">
-      <div className="freq-btn-group">
-        {EQ_NOVICE_FREQS.map((freq) => (
+    <div className='quiz-view'>
+      <div className='freq-btn-group'>
+        {ISO_FREQS_FULL_OCT.map((freq) => (
           <button
-            className="freq-btn"
+            className='freq-btn'
             key={freq}
-            onClick={() => onSubmit(freq)}
+            onClick={() => { onSubmit(freq); }}
           >
             {freq}
           </button>
@@ -28,8 +29,12 @@ export const QuizView = (props: QuizViewProps) => {
       </div>
       <label>
         EQ On/Off
-        <input type="checkbox" onChange={handleEqToggle} defaultChecked />
+        <input
+          type='checkbox'
+          onChange={handleEqToggle}
+          defaultChecked
+        />
       </label>
     </div>
-  );
-};
+  )
+}
