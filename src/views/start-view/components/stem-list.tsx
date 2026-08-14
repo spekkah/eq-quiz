@@ -2,7 +2,7 @@ import type { AudioFile } from '@/lib/db'
 
 interface StemListProps {
   stems: AudioFile[]
-  onRemove: (id: number) => void
+  onRemove: (id: number) => Promise<void>
 }
 
 export const StemList = (props: StemListProps) => {
@@ -19,7 +19,13 @@ export const StemList = (props: StemListProps) => {
           key={stem.id}
         >
           <span>{stem.name}</span>
-          <button onClick={() => { onRemove(stem.id); }}>X</button>
+          <button
+            onClick={() => {
+              void onRemove(stem.id)
+            }}
+          >
+            X
+          </button>
         </li>
       ))}
     </ul>

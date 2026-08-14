@@ -5,19 +5,24 @@ import { useAudioPlayer } from '@/hooks/use-audio-player'
 import { AudioLoader } from '@/lib/audio/audio-loader'
 import { EqualizerEffect } from '@/lib/audio/effects/equalizer'
 import { db } from '@/lib/db'
-import { ISO_FREQS_FULL_OCT, RESULT_TIMEOUT } from '@/utils/constants'
+import { RESULT_TIMEOUT } from '@/utils/constants'
 import { QuizView } from '@/views/quiz-view'
 import { ResultView } from '@/views/result-view'
 import { StartView } from '@/views/start-view'
 
-import { useAppStore } from './store'
+import { DIFFICULTY_MAP } from './utils/difficulty'
+import { getRandomFloat } from './utils/math'
+import { useAppStore, useConfigStore } from './store'
 
 const createEqualizerEffect = (ctx: AudioContext): EqualizerEffect => {
   return new EqualizerEffect(ctx)
 }
 
 export const App = () => {
-  const { phase, targetFreq, userFreq, startRound, submitGuess } = useAppStore()
+  const { phase, targetFreq, userFreq, startRound, submitGuess, reset } =
+    useAppStore()
+  const { difficulty, trainingRange } = useConfigStore()
+  const config = DIFFICULTY_MAP[difficulty]
 
   const [audioBuffers, setAudioBuffers] = useState<AudioBuffer[]>([])
 
@@ -41,8 +46,17 @@ export const App = () => {
       setAudioBuffers(currentBuffers)
     }
 
-    const freqIdx = Math.floor(Math.random() * ISO_FREQS_FULL_OCT.length)
-    const frequency = ISO_FREQS_FULL_OCT[freqIdx]
+    const freqs = config.getFreqs(trainingRange)
+    let frequency: number
+
+    if (freqs === 'continuous') {
+      frequency = Math.round(
+        getRandomFloat(trainingRange.min, trainingRange.max),
+      )
+    } else {
+      const freqIdx = Math.floor(Math.random() * freqs.length)
+      frequency = freqs[freqIdx]
+    }
 
     audioPlayer.configureEffect({ frequency })
 
@@ -50,18 +64,23 @@ export const App = () => {
     audioPlayer.play(currentBuffers[bufferIdx])
 
     startRound(frequency)
-  }, [audioBuffers, audioCtx, audioPlayer, startRound])
+  }, [audioBuffers, audioCtx, audioPlayer, startRound, config, trainingRange])
 
   const handleSubmit = (freq: number) => {
     audioPlayer.stop()
     submitGuess(freq)
   }
 
+  const handleReset = () => {
+    audioPlayer.stop()
+    reset()
+  }
+
   useEffect(() => {
     if (phase !== 'result') return
 
-    const timerId = setTimeout(async () => {
-      await handleStartRound()
+    const timerId = setTimeout(() => {
+      void handleStartRound()
     }, RESULT_TIMEOUT)
 
     return () => {
@@ -71,11 +90,14 @@ export const App = () => {
 
   return (
     <div className='app'>
-      {phase === 'init' && <StartView onStart={handleStartRound} />}
+      {phase === 'init' && (
+        <StartView onStart={() => void handleStartRound()} />
+      )}
       {phase === 'quiz' && (
         <QuizView
           onEqToggle={audioPlayer.toggleEffect}
           onSubmit={handleSubmit}
+          onReset={handleReset}
         />
       )}
       {phase === 'result' && targetFreq !== null && (

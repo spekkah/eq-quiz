@@ -73,12 +73,13 @@ body {
 
 .freq-btn-group {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .freq-btn {
-  width: 5rem;
-  height: 5rem;
+  /*width: 5rem;*/
+  min-width: 2.5rem;
+  height: 4rem;
 }
 
 .result-view {
@@ -87,4 +88,10 @@ body {
   align-items: center;
   gap: 1rem;
   font-size: 2rem;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
 }

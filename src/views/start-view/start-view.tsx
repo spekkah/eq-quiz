@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 
 import { type AudioFile, db } from '@/lib/db'
 
+import { Settings } from './components/settings'
 import { StemList } from './components/stem-list'
 
 interface StartViewProps {
@@ -50,6 +51,7 @@ export const StartView = (props: StartViewProps) => {
 
   return (
     <div className='start-view'>
+      <Settings />
       <button
         className='start-round-btn'
         onClick={onStart}
@@ -63,7 +65,7 @@ export const StartView = (props: StartViewProps) => {
             type='file'
             multiple
             accept='audio/*'
-            onChange={handleStemUpload}
+            onChange={(e) => void handleStemUpload(e)}
           />
           {uploadError && <span style={{ color: 'red' }}>{uploadError}</span>}
         </div>

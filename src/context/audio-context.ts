@@ -1,9 +1,9 @@
-import { createContext, useContext } from 'react'
+import { createContext, use } from 'react'
 
 export const AudioContextCtx = createContext<AudioContext | null>(null)
 
 export const useAudioContext = () => {
-  const ctx = useContext(AudioContextCtx)
+  const ctx = use(AudioContextCtx)
 
   if (!ctx)
     throw new Error(

@@ -24,3 +24,10 @@ export const calculateDifferenceInCents = (
   if (freq1 === 0 || freq2 === 0) return NaN
   return 1200 * Math.abs(Math.log2(freq2 / freq1))
 }
+
+export const getRandomFloat = (min: number, max: number) => {
+  if (min > max) throw new Error('Range Error')
+
+  const range = max - min
+  return min + Math.random() * range
+}

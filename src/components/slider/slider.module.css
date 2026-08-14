@@ -1,0 +1,11 @@
+.slider {
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+}
+
+.heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
