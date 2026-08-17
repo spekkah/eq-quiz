@@ -16,7 +16,6 @@ export const QuizView = (props: QuizViewProps) => {
   const { onEqToggle, onSubmit, onReset } = props
   const { difficulty, trainingRange } = useConfigStore()
   const config = DIFFICULTY_MAP[difficulty]
-  const freqs = config.getFreqs(trainingRange)
 
   const handleEqToggle = (e: ChangeEvent<HTMLInputElement>) => {
     onEqToggle(e.target.checked)
@@ -24,15 +23,15 @@ export const QuizView = (props: QuizViewProps) => {
 
   return (
     <div className='quiz-view'>
-      {freqs === 'continuous' && (
+      {config.mode === 'continuous' && (
         <FreqInput
           trainingRange={trainingRange}
           onSubmit={onSubmit}
         />
       )}
-      {freqs !== 'continuous' && (
+      {config.mode === 'discrete' && (
         <FreqButtons
-          freqs={freqs}
+          freqs={config.getFreqs(trainingRange)}
           onSubmit={onSubmit}
         />
       )}

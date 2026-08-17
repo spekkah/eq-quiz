@@ -11,7 +11,6 @@ import { ResultView } from '@/views/result-view'
 import { StartView } from '@/views/start-view'
 
 import { DIFFICULTY_MAP } from './utils/difficulty'
-import { getRandomFloat } from './utils/math'
 import { useAppStore, useConfigStore } from './store'
 
 const createEqualizerEffect = (ctx: AudioContext): EqualizerEffect => {
@@ -46,18 +45,7 @@ export const App = () => {
       setAudioBuffers(currentBuffers)
     }
 
-    const freqs = config.getFreqs(trainingRange)
-    let frequency: number
-
-    if (freqs === 'continuous') {
-      frequency = Math.round(
-        getRandomFloat(trainingRange.min, trainingRange.max),
-      )
-    } else {
-      const freqIdx = Math.floor(Math.random() * freqs.length)
-      frequency = freqs[freqIdx]
-    }
-
+    const frequency = config.getRandomFreq(trainingRange)
     audioPlayer.configureEffect({ frequency })
 
     const bufferIdx = Math.floor(Math.random() * currentBuffers.length)
