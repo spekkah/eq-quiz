@@ -4,6 +4,8 @@ export class AudioPlayer {
   private audioCtx: AudioContext
   private effect: AudioEffect
   private currentSource: AudioBufferSourceNode | null = null
+
+  // Mono mixdown to focus on the frequency content rather than stereo image
   private splitter: ChannelSplitterNode
   private merger: ChannelMergerNode
 
@@ -39,5 +41,7 @@ export class AudioPlayer {
 
   dispose() {
     this.stop()
+    this.splitter.disconnect()
+    this.merger.disconnect()
   }
 }

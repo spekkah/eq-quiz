@@ -20,7 +20,7 @@ export const StartView = (props: StartViewProps) => {
     [],
     [] as AudioFile[],
   )
-  const canStartRound = audioStems.length > 0 || false
+  const canStartRound = audioStems.length > 0
 
   // TODO: Prevent loading corrupted audio
   const handleStemUpload = async (e: ChangeEvent<HTMLInputElement>) => {
