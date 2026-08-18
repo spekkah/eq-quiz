@@ -15,7 +15,8 @@ export class AudioPlayer {
     this.splitter = audioCtx.createChannelSplitter(2)
     this.merger = audioCtx.createChannelMerger(1)
     this.effect.connect(this.splitter)
-    this.splitter.connect(this.merger)
+    this.splitter.connect(this.merger, 0, 0)
+    this.splitter.connect(this.merger, 1, 0)
     this.merger.connect(this.audioCtx.destination)
   }
 
