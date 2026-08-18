@@ -1,23 +1,26 @@
 import type { AudioEffect } from './effects/types'
 
 export class AudioPlayer {
-  private audioCtx: AudioContext
-  private effect: AudioEffect
+  private readonly audioCtx: AudioContext
+
+  private readonly effect: AudioEffect
   private currentSource: AudioBufferSourceNode | null = null
 
-  // Mono mixdown to focus on the frequency content rather than stereo image
-  private splitter: ChannelSplitterNode
-  private merger: ChannelMergerNode
+  // Down-mix to mono (0.5·L + 0.5·R under the 'speakers' interpretation) so
+  // training focuses on frequency content rather than the stereo image.
+  private readonly downmix: GainNode
 
   constructor(audioCtx: AudioContext, effect: AudioEffect) {
     this.audioCtx = audioCtx
     this.effect = effect
-    this.splitter = audioCtx.createChannelSplitter(2)
-    this.merger = audioCtx.createChannelMerger(1)
-    this.effect.connect(this.splitter)
-    this.splitter.connect(this.merger, 0, 0)
-    this.splitter.connect(this.merger, 1, 0)
-    this.merger.connect(this.audioCtx.destination)
+
+    this.downmix = new GainNode(audioCtx, {
+      channelCount: 1,
+      channelCountMode: 'explicit',
+      channelInterpretation: 'speakers',
+    })
+
+    this.effect.connect(this.downmix).connect(this.audioCtx.destination)
   }
 
   play(buffer: AudioBuffer): void {
@@ -40,9 +43,8 @@ export class AudioPlayer {
     this.currentSource = null
   }
 
-  dispose() {
+  dispose(): void {
     this.stop()
-    this.splitter.disconnect()
-    this.merger.disconnect()
+    this.downmix.disconnect()
   }
 }

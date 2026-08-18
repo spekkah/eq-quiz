@@ -1,7 +1,10 @@
-export interface AudioEffect<TOptions = unknown> {
+export interface AudioEffect {
   readonly inputNode: AudioNode
-  configure(options: Partial<TOptions>): void
-  connect(destination: AudioNode): void
-  toggle(isEnabled: boolean): void
+  connect(destination: AudioNode): AudioNode
+  setEnabled(isEnabled: boolean): void
   dispose(): void
+}
+
+export interface ConfigurableAudioEffect<TOptions> extends AudioEffect {
+  configure(options: Partial<TOptions>): void
 }

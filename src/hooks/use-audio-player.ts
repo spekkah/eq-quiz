@@ -1,27 +1,32 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { AudioPlayer } from '@/lib/audio/audio-player'
-import type { AudioEffect } from '@/lib/audio/effects/types'
+import type { ConfigurableAudioEffect } from '@/lib/audio/effects/types'
 
-export const useAudioPlayer = <TEffect extends AudioEffect>(
+export const useAudioPlayer = <
+  TEffect extends ConfigurableAudioEffect<unknown>,
+>(
   audioCtx: AudioContext,
-  effectFactory: (ctx: AudioContext) => TEffect,
+  EffectConstructor: new (ctx: AudioContext) => TEffect,
 ) => {
   const effectRef = useRef<TEffect>(null)
   const playerRef = useRef<AudioPlayer>(null)
 
   useEffect(() => {
-    const effect = effectFactory(audioCtx)
+    const effect = new EffectConstructor(audioCtx)
     const player = new AudioPlayer(audioCtx, effect)
 
     effectRef.current = effect
     playerRef.current = player
 
     return () => {
-      effect.dispose()
       player.dispose()
+      effect.dispose()
+
+      playerRef.current = null
+      effectRef.current = null
     }
-  }, [audioCtx, effectFactory])
+  }, [audioCtx, EffectConstructor])
 
   const play = useCallback((buffer: AudioBuffer) => {
     playerRef.current?.play(buffer)
@@ -37,14 +42,17 @@ export const useAudioPlayer = <TEffect extends AudioEffect>(
     effectRef.current?.configure(options)
   }, [])
 
-  const toggleEffect = useCallback((isEnabled: boolean) => {
-    effectRef.current?.toggle(isEnabled)
+  const setEnabled = useCallback((isEnabled: boolean) => {
+    effectRef.current?.setEnabled(isEnabled)
   }, [])
 
-  return {
-    play,
-    stop,
-    configureEffect,
-    toggleEffect,
-  }
+  return useMemo(
+    () => ({
+      play,
+      stop,
+      configureEffect,
+      setEnabled,
+    }),
+    [play, stop, configureEffect, setEnabled],
+  )
 }
