@@ -26,7 +26,13 @@
     /* Path Alias */
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    "noUncheckedIndexedAccess": true, // Crucial: forces array/object access to be possibly undefined
+    "exactOptionalPropertyTypes": true, // Prevents passing `undefined` to optional props explicitly
+    "noImplicitOverride": true, // Enforces `override` keyword in OOP
+    "noPropertyAccessFromIndexSignature": true, // Forces `obj['key']` for dynamic signatures, `obj.key` for known
+    "forceConsistentCasingInFileNames": true // Prevents case-sensitive import issues across OS
   },
   "include": ["src"]
 }

@@ -17,7 +17,7 @@ interface ConfigState {
 
 interface ConfigActions {
   setDifficulty: (difficulty: Difficulty) => void
-  setTrainingRange: (trainingRange: TrainingRange) => void
+  setTrainingRange: (trainingRange: Partial<TrainingRange>) => void
 }
 
 const initialState: ConfigState = {
@@ -31,8 +31,10 @@ export const useConfigStore = create<ConfigState & ConfigActions>()(
       ...initialState,
 
       setDifficulty: (difficulty) => set({ difficulty }),
-      // TODO: Partial update
-      setTrainingRange: (trainingRange) => set({ trainingRange }),
+      setTrainingRange: (trainingRange) =>
+        set((state) => ({
+          trainingRange: { ...state.trainingRange, ...trainingRange },
+        })),
     }),
     { name: 'eq-gym-config' },
   ),

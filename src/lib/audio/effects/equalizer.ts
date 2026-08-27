@@ -41,7 +41,7 @@ export class EqualizerEffect
     if (Math.abs(param.value - value) < 1e-6) return
 
     const now = this.audioCtx.currentTime
-    param.setTargetAtTime(value, now, PARAM_SMOOTHING_TIME)
+    param.linearRampToValueAtTime(value, now + PARAM_SMOOTHING_TIME)
   }
 
   private updateNodes(): void {

@@ -1,21 +1,16 @@
 import { type ChangeEvent } from 'react'
 
-import { useConfigStore } from '@/store'
-import { DIFFICULTY_MAP } from '@/utils/difficulty'
-
-import { FreqButtons } from './components/freq-buttons'
-import { FreqInput } from './components/freq-input'
+import { formatFreq } from '@/utils/display'
 
 interface QuizViewProps {
+  freqs: { freq: number; isActive: boolean }[]
   onEqToggle: (isEnabled: boolean) => void
   onSubmit: (freq: number) => void
   onReset: () => void
 }
 
 export const QuizView = (props: QuizViewProps) => {
-  const { onEqToggle, onSubmit, onReset } = props
-  const { difficulty, trainingRange } = useConfigStore()
-  const config = DIFFICULTY_MAP[difficulty]
+  const { freqs, onEqToggle, onSubmit, onReset } = props
 
   const handleEqToggle = (e: ChangeEvent<HTMLInputElement>) => {
     onEqToggle(e.target.checked)
@@ -23,18 +18,20 @@ export const QuizView = (props: QuizViewProps) => {
 
   return (
     <div className='quiz-view'>
-      {config.mode === 'continuous' && (
-        <FreqInput
-          trainingRange={trainingRange}
-          onSubmit={onSubmit}
-        />
-      )}
-      {config.mode === 'discrete' && (
-        <FreqButtons
-          freqs={config.getFreqs(trainingRange)}
-          onSubmit={onSubmit}
-        />
-      )}
+      <div className='freq-btn-group'>
+        {freqs.map((freq) => (
+          <button
+            className='freq-btn'
+            key={freq.freq}
+            disabled={!freq.isActive}
+            onClick={() => {
+              onSubmit(freq.freq)
+            }}
+          >
+            {formatFreq(freq.freq)}
+          </button>
+        ))}
+      </div>
       <label>
         EQ On/Off
         <input

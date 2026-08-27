@@ -31,12 +31,15 @@ export type DifficultyConfig =
 
 export type DifficultyMode = DifficultyConfig['mode']
 
-const getDiscreteFreqs = (range: TrainingRange, freqs: number[]) => {
+const getDiscreteFreqs = (
+  range: TrainingRange,
+  freqs: readonly number[],
+): number[] => {
   const { min, max } = range
 
   const inRange = freqs.filter((f) => f >= min && f <= max)
   if (inRange.length > 1) return inRange
-  if (freqs.length < 2) return freqs
+  if (freqs.length < 2) return [...freqs]
 
   let lowerIdx = freqs.findLastIndex((f) => f <= max)
   if (lowerIdx === -1) lowerIdx = 0
@@ -45,6 +48,9 @@ const getDiscreteFreqs = (range: TrainingRange, freqs: number[]) => {
   const lower = freqs[lowerIdx]
   const upper = freqs[lowerIdx + 1]
 
+  if (lower === undefined || upper === undefined)
+    throw new Error('Failed to extract discrete frequencies')
+
   return [lower, upper]
 }
 
@@ -52,7 +58,7 @@ const createDiscreteDifficulty = (
   label: string,
   gain: number,
   Q: number,
-  freqSet: number[],
+  freqSet: readonly number[],
 ): DifficultyConfig => {
   return {
     label,
@@ -68,7 +74,7 @@ const createDiscreteDifficulty = (
 }
 
 export const DIFFICULTY_MAP: Record<Difficulty, DifficultyConfig> = {
-  easy: createDiscreteDifficulty('Easy', 12, 1.41, ISO_FREQS_FULL_OCT),
+  easy: createDiscreteDifficulty('Easy', 15, 1.41, ISO_FREQS_FULL_OCT),
   medium: createDiscreteDifficulty('Medium', 9, 4.4, ISO_FREQS_THIRD_OCT),
   hard: {
     label: 'Hard',

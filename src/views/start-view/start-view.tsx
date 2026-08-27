@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from 'react'
+import { type ChangeEvent, useCallback, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { type AudioFile, db } from '@/lib/db'
@@ -41,13 +41,13 @@ export const StartView = (props: StartViewProps) => {
     }
   }
 
-  const handleStemRemove = async (id: number) => {
+  const handleStemRemove = useCallback(async (id: number) => {
     try {
       await db.audioFiles.delete(id)
     } catch {
       alert('Failed to remove stem')
     }
-  }
+  }, [])
 
   return (
     <div className='start-view'>
