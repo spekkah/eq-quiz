@@ -29,8 +29,8 @@ export const Slider = (props: SliderProps) => {
   }
 
   return (
-    <div className={styles.slider}>
-      <div className={styles.heading}>
+    <div className={styles['slider']}>
+      <div className={styles['heading']}>
         <span>{label}</span>
         <span>{formatFn(value)}</span>
       </div>
